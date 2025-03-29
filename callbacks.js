@@ -1,28 +1,37 @@
 function flipCoin() {
-    return new Promise((resolve, reject) => {
-      let result = Math.random(); // Generates a random number between 0 and 1
-      if (result > 0.5) {
-        resolve("You win!"); 
-      } else {
-        reject(new Error("You lose!")); 
-      }
-    });
-  }
-  
-  function fetchAdvice() {
-    return fetch("https://api.adviceslip.com/advice")
-      .then(response => response.json())
-      .then(data => data.slip.advice);
-  }
+  return new Promise((resolve, reject) => {
+    const result = Math.random();
 
-  flipCoin()
-  .then((message) => {
-    console.log(message); 
-    return fetchAdvice(); 
-  })
-  .then((advice) => {
-    console.log("Advice:", advice); 
-  })
-  .catch((error) => {
-    console.error(error.message); // 
+    if (result > 0.5) {
+      resolve("🎉 You win!");
+    } else {
+      reject(new Error("❌ You lose!"));
+    }
   });
+}
+
+const fetchAdvice = async () => {
+  try {
+    const response = await fetch("https://api.adviceslip.com/advice");
+    const data = await response.json();
+    return data.slip.advice;
+  } catch (error) {
+    console.log("⚠️ Error fetching advice:", error.message);
+  }
+};
+
+const playGame = async () => {
+  try {
+    const result = await flipCoin();
+    console.log(result);
+
+    const advice = await fetchAdvice();
+    if (advice) {
+      console.log("💡 Advice:", advice);
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+playGame();
